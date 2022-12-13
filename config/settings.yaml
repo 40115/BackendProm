@@ -4,8 +4,6 @@ default:
         driver: 'MySQL ODBC 8.0 ANSI Driver',               # Database Server Connection Driver
         server: 'localhost',                                  # Database Server Connection Name
         trusted_connection: 'yes',                          # Database Server Trust Connection Flag
-#        uid: 'admin',
-#        pwd: 'root'
     }
     database: {
         name: 'BacklogPRAMDB',                              # Database Name
@@ -15,10 +13,5 @@ default:
         port: 8000,                                         # Application Port number
         debug: True                                         # Application Debug flag
     }
-    MYSQL_HOST: 'localhost'
-    MYSQL_USER: 'admin'
-    MYSQL_PASSWORD: 'root'
-    MYSQL_DB: 'BacklogPRAMDB'
-    MYSQL_PORT: 3306
     redirect_backend_link: 'http://localhost:8000/'
     CORS_HEADERS: 'Content-Type'                            # Cors Header

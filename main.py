@@ -3,10 +3,10 @@ import json
 from flask import Flask, jsonify, request, abort
 from dynaconf import FlaskDynaconf
 from flask_cors import CORS
-from flask_mysqldb import MySQL
 import pyodbc as pyodbc
 
 from utils.helper.connection import connectionSet
+from utils.moviesHandlers.moviesGet import get_movies, get_movie_by_id
 
 app = Flask(__name__)
 
@@ -16,20 +16,26 @@ FlaskDynaconf(app, settings_files=["config/settings.yaml", "config/.secrets.yaml
 cors = CORS(app)
 
 
-@app.route('/', methods=['GET'])
-async def index():
+@app.route('/movies/getmovies', methods=['GET'])
+async def getMoviesHandler():
     connection = await connectionSet(app.config)
+    response = get_movies(
+        connection
+    )
+    connection.close()
+    return response
 
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM Movies')
-    columns = [column[0] for column in cursor.description]
-    strValues = cursor.fetchall()
-    data = []
-    for row in strValues:
-        data.append(dict(zip(columns, row)))
-    #a=jsonify(data)
-    data = json.dumps(data)
-    return data, 200
+
+@app.route('/movies/getmoviebyid', methods=['POST'])
+async def getMovieByIdHandler():
+    connection = await connectionSet(app.config)
+    response = get_movie_by_id(
+        connection,
+        request.json
+    )
+    connection.close()
+    return response
+
 
 @app.route('/login', methods=['POST'])
 async def loginHandler():
