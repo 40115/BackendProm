@@ -1,0 +1,5 @@
+Flask[async]>=2.2.2
+dynaconf>=3.1.11
+flask_cors
+flask_mysqldb
+pyodbc>=4.0.35
