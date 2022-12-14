@@ -15,12 +15,11 @@ FlaskDynaconf(app, settings_files=["config/settings.yaml", "config/.secrets.yaml
 cors = CORS(app)
 
 
-@app.route('/movies/getmovies', methods=['POST'])
+@app.route('/movies/getmovies', methods=['GET'])
 async def get_movies_handler():
     connection = await connectionSet(app.config)
     response = get_movies(
-        connection,
-        request.json
+        connection
     )
     connection.close()
     return response
