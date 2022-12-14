@@ -6,6 +6,7 @@ from utils.helper.connection import connectionSet
 from utils.moviesHandlers.moviesGet import get_movies, get_movie_by_id
 from utils.accountHandlers.login import login
 from utils.accountHandlers.register import register
+from utils.usersHandlers.usersGet import get_user_by_id
 
 app = Flask(__name__)
 
@@ -29,6 +30,17 @@ async def get_movies_handler():
 async def get_movie_by_id_handler():
     connection = await connectionSet(app.config)
     response = get_movie_by_id(
+        connection,
+        request.json
+    )
+    connection.close()
+    return response
+
+
+@app.route('/users/getuserbyid', methods=['POST'])
+async def get_user_by_id_handler():
+    connection = await connectionSet(app.config)
+    response = get_user_by_id(
         connection,
         request.json
     )
