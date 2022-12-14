@@ -1,5 +1,7 @@
 Flask[async]>=2.2.2
 dynaconf>=3.1.11
-flask_cors
 pyodbc>=4.0.35
 jsonschema>=4.17.3
+flask_cors
+passlib>=1.7.4
+bcrypt>=4.0.1

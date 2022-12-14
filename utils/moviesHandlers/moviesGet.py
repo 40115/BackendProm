@@ -4,11 +4,33 @@ from jsonschema import validate, exceptions
 
 
 # Get All Movies
-def get_movies(db_connection):
+def get_movies(db_connection, json_request):
+    # Get movie id json
+    page_json = json_request
+
+    # Create schema for JSON data validation
+    json_data_schema = {
+        "type": "object",
+        "properties": {
+            "page": {
+                "type": "integer"
+            }
+        },
+        "required": ["page"]
+    }
+
+    # If some of these inputs are not valid, return 'error'
+    try:
+        validate(instance=page_json, schema=json_data_schema)
+    except exceptions.ValidationError as e:
+        return jsonify(error=e.message), 400
+
     # Establish connection with DB
     cursor = db_connection.cursor()
 
     try:
+        page = page_json["page"] - 1
+
         # Get All Movies
         cursor.execute("SELECT JSON_ARRAYAGG(JSON_OBJECT("
                        "'id', id, "
@@ -21,7 +43,8 @@ def get_movies(db_connection):
                        "'ageRatingId', ageRatingId, "
                        "'imdbUrl', imdbUrl "
                        ")) AS Movies "
-                       "FROM Movies")
+                       "FROM Movies "
+                       f"LIMIT 5 OFFSET {page * 5}")
 
         values = cursor.fetchall()
         if len(values) == 0:
@@ -31,14 +54,11 @@ def get_movies(db_connection):
         movies_json = json.loads(str_values)
 
         cursor.close()
-
         return movies_json, 200
 
-    except Exception as e:
-        print(e)
+    except Exception:
         cursor.close()
-
-    return jsonify(error='error'), 400
+        return jsonify(error='error'), 400
 
 
 # Get Movie
@@ -97,5 +117,4 @@ def get_movie_by_id(db_connection, json_request):
 
     except Exception:
         cursor.close()
-
-    return jsonify(error='error'), 400
+        return jsonify(error='error'), 400
