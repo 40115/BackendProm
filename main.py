@@ -2,6 +2,7 @@ from flask import Flask, request
 from dynaconf import FlaskDynaconf
 from flask_cors import CORS
 
+from utils.backlogHandlers.backlogGet import get_backlog_by_user
 from utils.helper.connection import connectionSet
 from utils.moviesHandlers.moviesGet import get_movies, get_movie_by_id
 from utils.accountHandlers.login import login
@@ -41,6 +42,17 @@ async def get_movie_by_id_handler():
 async def get_user_by_id_handler():
     connection = await connectionSet(app.config)
     response = get_user_by_id(
+        connection,
+        request.json
+    )
+    connection.close()
+    return response
+
+
+@app.route('/backlog/getbacklogbyuser', methods=['POST'])
+async def get_backlog_by_user_handler():
+    connection = await connectionSet(app.config)
+    response = get_backlog_by_user(
         connection,
         request.json
     )
