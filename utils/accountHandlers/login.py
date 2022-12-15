@@ -14,7 +14,7 @@ def login(email, password, db_connection):
 
     try:
         # Retrieve user email from database
-        cursor.execute("SELECT email, password, username "
+        cursor.execute("SELECT Id, Email, Password, Username "
                        "FROM Users "
                        f"WHERE Email ='{email}'")
 
@@ -30,6 +30,7 @@ def login(email, password, db_connection):
             return jsonify(error="Password does not match!")
 
         user = {
+            "id": user_info.id,
             "email": user_info.email,
             "username": user_info.username
         }
