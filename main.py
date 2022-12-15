@@ -8,6 +8,7 @@ from utils.helper.connection import connectionSet
 from utils.moviesHandlers.moviesGet import get_movies, get_movie_by_id
 from utils.accountHandlers.login import login
 from utils.accountHandlers.register import register
+from utils.statusesHandlers.statusesGet import get_statuses
 from utils.usersHandlers.usersGet import get_user_by_id
 
 app = Flask(__name__)
@@ -67,6 +68,16 @@ async def update_backlog_handler():
     response = insert_or_update_backlog_entry(
         connection,
         request.json
+    )
+    connection.close()
+    return response
+
+
+@app.route('/status/getstatuses', methods=['GET'])
+async def get_statuses_handler():
+    connection = await connectionSet(app.config)
+    response = get_statuses(
+        connection
     )
     connection.close()
     return response

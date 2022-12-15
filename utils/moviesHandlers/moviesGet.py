@@ -4,7 +4,7 @@ from jsonschema import validate, exceptions
 
 
 # Get All Movies
-def get_movies(db_connection, json_request):
+def get_movies(db_connection):
     # Establish connection with DB
     cursor = db_connection.cursor()
 
