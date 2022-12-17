@@ -24,20 +24,20 @@ def login(email, password, db_connection):
 
         user_info = cursor.fetchone()
 
-        if not bcrypt.verify(password, user_info.password):
+        if not bcrypt.verify(password, user_info.Password):
             cursor.rollback()
             cursor.close()
             return jsonify(error="Password does not match!")
 
         user = {
-            "id": user_info.id,
-            "email": user_info.email,
-            "username": user_info.username
+            "id": user_info.Id,
+            "email": user_info.Email,
+            "username": user_info.Username
         }
 
         cursor.close()
         return jsonify(user), 200
 
-    except Exception:
+    except Exception as e:
         cursor.close()
         return jsonify(error="Error"), 400
