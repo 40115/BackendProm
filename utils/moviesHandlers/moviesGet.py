@@ -16,7 +16,7 @@ def get_movies(db_connection):
                        "'releaseDate', m.releaseDate, "
                        "'imdbRating', m.imdbRating, "
                        "'runTime', m.runTime, "
-                       "'ageRating', ar.description, "
+                       "'ageRating', ar.description "
                        ")) AS Movies "
                        "FROM Movies m "
                        "LEFT JOIN AgeRatings ar ON ar.id = m.ageRatingId")
@@ -31,7 +31,7 @@ def get_movies(db_connection):
         cursor.close()
         return movies_json, 200
 
-    except Exception:
+    except Exception as e:
         cursor.close()
         return jsonify(error='error'), 400
 
