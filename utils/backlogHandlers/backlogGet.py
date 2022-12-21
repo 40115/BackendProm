@@ -10,13 +10,16 @@ def get_backlog_by_user(db_connection, json_request):
 
     # Create schema for JSON data validation
     json_data_schema = {
-        "type": "object",
-        "properties": {
-            "userId": {
-                "type": "integer"
-            }
-        },
-        "required": ["userId"]
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "type": "integer"
+                }
+            },
+            "required": ["userId"]
+        }
     }
 
     # If some of these inputs are not valid, return 'error'
@@ -29,7 +32,7 @@ def get_backlog_by_user(db_connection, json_request):
     cursor = db_connection.cursor()
 
     try:
-        user_id = user_id_json["userId"]
+        user_id = user_id_json[0]["userId"]
 
         # Get backlog
         cursor.execute("SELECT JSON_ARRAYAGG(JSON_OBJECT("
