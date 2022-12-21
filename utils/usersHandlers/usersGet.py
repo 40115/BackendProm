@@ -2,7 +2,7 @@ from flask import jsonify
 import json
 from jsonschema import validate, exceptions
 
-# Get Movie
+# Get User
 def get_user_by_id(db_connection, json_request):
     # Get movie id json
     user_id_json = json_request
@@ -28,13 +28,13 @@ def get_user_by_id(db_connection, json_request):
     cursor = db_connection.cursor()
 
     try:
-        user_id = user_id_json["userId"]
+        user_id = user_id_json[0]["userId"]
 
         # Get User data
-        cursor.execute("SELECT JSON_ARRAYAGG(JSON_OBJECT("
+        cursor.execute("SELECT JSON_OBJECT("
                        "'email', u.email, "
                        "'username', u.username "
-                       ")) AS User "
+                       ") AS User "
                        "FROM Users u "
                        f"WHERE u.Id = {user_id}")
 
