@@ -62,10 +62,10 @@ def get_movie_by_id(db_connection, json_request):
     cursor = db_connection.cursor()
 
     try:
-        movie_id = movie_id_json["movieId"]
+        movie_id = movie_id_json[0]["movieId"]
 
         # Get Movie
-        cursor.execute("SELECT JSON_ARRAYAGG(JSON_OBJECT("
+        cursor.execute("SELECT JSON_OBJECT("
                        "'id', m.id, "
                        "'name', m.name, "
                        "'synopsis', m.synopsis, "
@@ -75,7 +75,7 @@ def get_movie_by_id(db_connection, json_request):
                        "'cover', m.cover, "
                        "'ageRating', ar.description, "
                        "'imdbUrl', m.imdbUrl "
-                       ")) AS Movies "
+                       ") AS Movies "
                        "FROM Movies m "
                        "LEFT JOIN AgeRatings ar ON ar.id = m.ageRatingId "
                        f"WHERE m.Id = {movie_id}")
@@ -94,7 +94,7 @@ def get_movie_by_id(db_connection, json_request):
                        ")) AS Genres "
                        "FROM Genres g "
                        "LEFT JOIN MovieGenres mg ON g.Id = mg.GenreId "
-                       f"WHERE mg.MovieId = 2")
+                       f"WHERE mg.MovieId = {movie_id}")
 
         values = cursor.fetchall()
 
