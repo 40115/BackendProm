@@ -3,7 +3,7 @@ from dynaconf import FlaskDynaconf
 from flask_cors import CORS
 
 from utils.backlogHandlers.backlogGet import get_backlog_by_user
-from utils.backlogHandlers.backlogUpdate import insert_or_update_backlog_entry
+from utils.backlogHandlers.backlogUpdate import insert_or_update_backlog_entry, remove_movie_from_backlog
 from utils.helper.connection import connectionSet
 from utils.moviesHandlers.moviesGet import get_movies, get_movie_by_id
 from utils.accountHandlers.login import login
@@ -66,6 +66,16 @@ async def get_backlog_by_user_handler():
 async def update_backlog_handler():
     connection = await connectionSet(app.config)
     response = insert_or_update_backlog_entry(
+        connection,
+        request.json
+    )
+    connection.close()
+    return response
+
+@app.route('/backlog/remove_movie_from_backlog', methods=['POST'])
+async def remove_movie_from_backlog_handler():
+    connection = await connectionSet(app.config)
+    response = remove_movie_from_backlog(
         connection,
         request.json
     )

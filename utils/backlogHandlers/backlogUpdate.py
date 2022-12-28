@@ -96,3 +96,61 @@ def insert_or_update_backlog_entry(db_connection, json_request):
         cursor.rollback()
         cursor.close()
         return jsonify(error='error'), 400
+
+
+def remove_movie_from_backlog(db_connection, json_request):
+    # Get movie id json
+    backlog_json = json_request
+
+    # Create schema for JSON data validation
+    json_data_schema = {
+        "type": "object",
+        "properties": {
+            "userId": {
+                "type": "integer"
+            },
+            "movieId": {
+                "type": "integer"
+            },
+        },
+        "required": ["userId", "movieId"]
+    }
+
+    try:
+        validate(instance=backlog_json, schema=json_data_schema)
+    except exceptions.ValidationError as e:
+        return jsonify(error=e.message), 400
+
+    # Establish connection with DB
+    cursor = db_connection.cursor()
+
+    try:
+        user_id = backlog_json["userId"]
+        movie_id = backlog_json["movieId"]
+
+        # Check if entry exists
+        # See if entry exists
+        cursor.execute("SELECT Id, UserId, MovieId, WatchedDate, StatusId, Rating "
+                       "FROM Backlogs "
+                       f"WHERE UserId = {user_id} "
+                       f"AND MovieId = {movie_id}")
+
+        if cursor.rowcount == 0:
+            cursor.rollback()
+            cursor.close()
+            return jsonify("Movie is not in backlog!"), 400
+
+        # Delete movie from backlog
+        params = (user_id, movie_id)
+        cursor.execute("DELETE FROM Backlogs "
+                       "WHERE UserId = ? "
+                       "AND MovieId = ?", params)
+
+        cursor.commit()
+        cursor.close()
+        return jsonify(success="success"), 200
+
+    except Exception:
+        cursor.rollback()
+        cursor.close()
+        return jsonify(error='error'), 400
