@@ -106,14 +106,11 @@ def remove_movie_from_backlog(db_connection, json_request):
     json_data_schema = {
         "type": "object",
         "properties": {
-            "userId": {
+            "backlogId": {
                 "type": "integer"
-            },
-            "movieId": {
-                "type": "integer"
-            },
+            }
         },
-        "required": ["userId", "movieId"]
+        "required": ["backlogId"]
     }
 
     try:
@@ -125,15 +122,13 @@ def remove_movie_from_backlog(db_connection, json_request):
     cursor = db_connection.cursor()
 
     try:
-        user_id = backlog_json["userId"]
-        movie_id = backlog_json["movieId"]
+        backlog_id = backlog_json["backlogId"]
 
         # Check if entry exists
         # See if entry exists
         cursor.execute("SELECT Id, UserId, MovieId, WatchedDate, StatusId, Rating "
                        "FROM Backlogs "
-                       f"WHERE UserId = {user_id} "
-                       f"AND MovieId = {movie_id}")
+                       f"WHERE Id = ?", backlog_id)
 
         if cursor.rowcount == 0:
             cursor.rollback()
@@ -141,10 +136,8 @@ def remove_movie_from_backlog(db_connection, json_request):
             return jsonify("Movie is not in backlog!"), 400
 
         # Delete movie from backlog
-        params = (user_id, movie_id)
         cursor.execute("DELETE FROM Backlogs "
-                       "WHERE UserId = ? "
-                       "AND MovieId = ?", params)
+                       "WHERE Id = ?", backlog_id)
 
         cursor.commit()
         cursor.close()
