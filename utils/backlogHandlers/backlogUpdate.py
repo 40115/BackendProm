@@ -128,7 +128,7 @@ def remove_movie_from_backlog(db_connection, json_request):
         # See if entry exists
         cursor.execute("SELECT Id, UserId, MovieId, WatchedDate, StatusId, Rating "
                        "FROM Backlogs "
-                       f"WHERE Id = ?", backlog_id)
+                       "WHERE Id = ?", backlog_id)
 
         if cursor.rowcount == 0:
             cursor.rollback()

@@ -36,6 +36,7 @@ def get_backlog_by_user(db_connection, json_request):
 
         # Get backlog
         cursor.execute("SELECT JSON_ARRAYAGG(JSON_OBJECT("
+                       "'backlogId', b.Id, "
                        "'movieId', m.Id, "
                        "'movieName', m.Name, "
                        "'releaseDate', m.ReleaseDate, "
@@ -52,7 +53,7 @@ def get_backlog_by_user(db_connection, json_request):
                        "LEFT JOIN Statuses s ON s.Id = b.StatusId "
                        "LEFT JOIN AgeRatings ar ON ar.Id = m.AgeRatingId "
                        "LEFT JOIN Users u ON u.Id = b.UserId "
-                       f"WHERE u.Id = {user_id}")
+                       "WHERE u.Id = ?", user_id)
 
         values = cursor.fetchall()
         if len(values) == 0:
