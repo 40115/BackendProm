@@ -86,13 +86,14 @@ def insert_or_update_backlog_entry(db_connection, json_request):
                 set_query += f"Rating = {rating}, "
 
             if set_query != "SET ":
-                cursor.execute(f"UPDATE Backlogs {set_query[:-2]}")
+                cursor.execute(f"UPDATE Backlogs {set_query[:-2]} "
+                               f"WHERE Id = {backlogged_movie.Id}")
 
         cursor.commit()
         cursor.close()
         return jsonify(success="success"), 200
 
-    except Exception:
+    except Exception as e:
         cursor.rollback()
         cursor.close()
         return jsonify(error='error'), 400

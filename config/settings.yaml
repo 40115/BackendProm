@@ -9,9 +9,9 @@ default:
         name: 'BacklogPRAMDB',                              # Database Name
     }
     app_config: {
-        host: 'localhost',                                    # Application Address
+        host: '0.0.0.0',                                    # Application Address
         port: 8000,                                         # Application Port number
         debug: True                                         # Application Debug flag
     }
-    redirect_backend_link: 'http://localhost:8000/'
+    redirect_backend_link: 'http://0.0.0.0:8000/'
     CORS_HEADERS: 'Content-Type'                            # Cors Header
